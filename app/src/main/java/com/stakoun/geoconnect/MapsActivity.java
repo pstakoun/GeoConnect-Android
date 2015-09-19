@@ -4,21 +4,33 @@ import android.content.Context;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class MapsActivity extends FragmentActivity
 {
     private GoogleMap mMap;
+    private Waypoint[] waypoints;
+    private Gson gson;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -26,6 +38,8 @@ public class MapsActivity extends FragmentActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        addSettingsIcon();
+        gson = new Gson();
     }
 
     @Override
@@ -33,6 +47,7 @@ public class MapsActivity extends FragmentActivity
     {
         super.onResume();
         setUpMapIfNeeded();
+        new GetWaypointsTask().execute();
     }
 
     private void setUpMapIfNeeded()
@@ -58,4 +73,55 @@ public class MapsActivity extends FragmentActivity
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 10f));
     }
+
+    private void addSettingsIcon()
+    {
+        
+    }
+
+    private void setWaypoints(Waypoint[] waypoints)
+    {
+        this.waypoints = waypoints;
+        for (Waypoint waypoint : waypoints) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(waypoint.getLatitude(), waypoint.getLongitude()))
+                    .title(waypoint.getTitle())
+                    .snippet(waypoint.getInfo()));
+        }
+    }
+
+    private class GetWaypointsTask extends AsyncTask<Void, Void, Waypoint[]>
+    {
+        protected Waypoint[] doInBackground(Void... params)
+        {
+            Waypoint[] points = null;
+            try {
+                URL url = new URL("https://geoconnect-kshen3778.c9.io/waypoints.php");
+                URLConnection urlConnection = url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                String json = inputStreamToString(in);
+                points = gson.fromJson(json, Waypoint[].class);
+            } catch (IOException e) {
+                Log.e("getWaypointsTask", e.getMessage());
+            }
+            return points;
+        }
+
+        protected void onPostExecute(Waypoint[] waypoints)
+        {
+            setWaypoints(waypoints);
+        }
+
+        private String inputStreamToString(InputStream inputStream) throws IOException
+        {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+            inputStream.close();
+            return result;
+        }
+    }
+
 }
