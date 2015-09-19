@@ -1,6 +1,7 @@
 package com.stakoun.geoconnect;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -9,11 +10,12 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -30,7 +32,7 @@ public class MapsActivity extends FragmentActivity
 {
     private GoogleMap mMap;
     private Waypoint[] waypoints;
-    private Gson gson;
+    private ImageView settingsImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,7 +41,6 @@ public class MapsActivity extends FragmentActivity
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
         addSettingsIcon();
-        gson = new Gson();
     }
 
     @Override
@@ -48,6 +49,12 @@ public class MapsActivity extends FragmentActivity
         super.onResume();
         setUpMapIfNeeded();
         new GetWaypointsTask().execute();
+    }
+
+    public void openSettings(View v)
+    {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void setUpMapIfNeeded()
@@ -76,7 +83,8 @@ public class MapsActivity extends FragmentActivity
 
     private void addSettingsIcon()
     {
-        
+        settingsImageView = new ImageView(this);
+        settingsImageView.setImageResource(R.drawable.settings);
     }
 
     private void setWaypoints(Waypoint[] waypoints)
@@ -100,7 +108,7 @@ public class MapsActivity extends FragmentActivity
                 URLConnection urlConnection = url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String json = inputStreamToString(in);
-                points = gson.fromJson(json, Waypoint[].class);
+                points = new Gson().fromJson(json, Waypoint[].class);
             } catch (IOException e) {
                 Log.e("getWaypointsTask", e.getMessage());
             }
