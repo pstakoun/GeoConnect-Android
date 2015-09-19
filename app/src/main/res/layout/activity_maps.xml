@@ -8,14 +8,16 @@
 
     <ImageView
         android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_height="96dp"
         android:id="@+id/settingsIcon"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:padding="8dp"
         android:src="@drawable/settings"
         android:scaleType="fitXY"
-        android:onClick="openSettings" />
+        android:onClick="openSettings"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="false"
+        android:paddingLeft="8dp"
+        android:paddingBottom="32dp" />
 
 </RelativeLayout>

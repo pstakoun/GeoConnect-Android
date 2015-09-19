@@ -1,5 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
-        android:key="@string/pushToggle_id"
-        android:title="@string/pushToggle_title" />
+        android:key="@string/notifToggle_id"
+        android:title="@string/notifToggle_title" />
+    <Preference
+        android:key="websiteLink"
+        android:title="Add your own Waypoints">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://geoconnect-kshen3778.c9.io/"
+            />
+    </Preference>
 </PreferenceScreen>

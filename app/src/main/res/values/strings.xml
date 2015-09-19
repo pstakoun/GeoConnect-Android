@@ -2,9 +2,11 @@
     <string name="app_name">GeoConnect</string>
     <string name="title_activity_maps">GeoConnect</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="request_uber">Would you like to Uber to this waypoint?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="action_settings">Settings</string>
 
-    <string name="pushToggle_id">pushToggle</string>
-    <string name="pushToggle_title">Toggle Push Notifications</string>
+    <string name="notifToggle_id">notifToggle</string>
+    <string name="notifToggle_title">Toggle Notifications</string>
 </resources>

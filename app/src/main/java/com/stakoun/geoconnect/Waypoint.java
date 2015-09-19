@@ -2,6 +2,9 @@ package com.stakoun.geoconnect;
 
 import com.google.gson.Gson;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by Peter on 2015-09-19.
  */
@@ -12,14 +15,31 @@ public class Waypoint
     private String title;
     private String address;
     private String info;
+    private int radius;
+    private Date lastNotif;
 
-    public Waypoint(double latitude, double longitude, String title, String address, String info)
+    private Date addDay(Date date)
     {
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.title = title;
-        this.address = address;
-        this.info = info;
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, 1);
+        return c.getTime();
+    }
+
+    public void setLatitude(double lat) {
+        latitude = lat;
+    }
+
+    public void setLongitude(double lng) {
+        longitude = lng;
+    }
+
+    public void updateLastNotif() {
+        lastNotif = new Date();
+    }
+
+    public boolean canSendNotif() {
+        return lastNotif == null || new Date().after(addDay(lastNotif));
     }
 
     public double getLatitude() {
@@ -40,6 +60,10 @@ public class Waypoint
 
     public String getInfo() {
         return info;
+    }
+
+    public int getRadius() {
+        return radius;
     }
 
     public String toString() {
