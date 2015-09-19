@@ -100,13 +100,6 @@ public class MapsActivity extends FragmentActivity
                                           public boolean onMarkerClick(Marker marker) {
                                               UberDialogFragment uberDialogFragment = new UberDialogFragment();
                                               uberDialogFragment.setMapsActivity(mapsActivity);
-                                              Location origin = null;
-                                              try {
-                                                  origin = locMan.getLastKnownLocation(locMan.getBestProvider(criteria, false));
-                                              } catch (SecurityException e) {
-                                                  Log.e("getLocation", e.getMessage());
-                                              }
-                                              uberDialogFragment.setOrigin(origin.getLatitude(), origin.getLongitude());
                                               uberDialogFragment.setDestination(marker.getPosition().latitude, marker.getPosition().longitude);
                                               uberDialogFragment.show(getSupportFragmentManager(), "UberDialog");
                                               return false;
