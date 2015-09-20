@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity
@@ -117,29 +118,7 @@ public class MapsActivity extends FragmentActivity
     private void setWaypoints(Waypoint[] waypoints)
     {
         this.waypoints = waypoints;
-        for (Waypoint waypoint : waypoints) {
-            Geocoder geocoder = new Geocoder(this);
-            double lat;
-            double lng;
-            try {
-                List<Address> list = geocoder.getFromLocationName(waypoint.getAddress(), 1);
-                if (list.size() > 0) {
-                    Address address = list.get(0);
-                    waypoint.setLatitude(address.getLatitude());
-                    waypoint.setLongitude(address.getLongitude());
-                } else {
-                    Log.e("Geocoder", "Invalid address!");
-                    continue;
-                }
-            } catch (IOException e) {
-                Log.e("Geocoder", e.getMessage());
-                continue;
-            }
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(waypoint.getLatitude(), waypoint.getLongitude()))
-                    .title(waypoint.getTitle())
-                    .snippet(waypoint.getInfo()));
-        }
+        new SetWaypointsTask().execute();
     }
 
     private class GetWaypointsTask extends AsyncTask<Void, Void, Waypoint[]>
@@ -174,6 +153,44 @@ public class MapsActivity extends FragmentActivity
             inputStream.close();
             return result;
         }
+    }
+
+    private class SetWaypointsTask extends AsyncTask<Void, Void, ArrayList>
+    {
+        protected ArrayList<MarkerOptions> doInBackground(Void... params)
+        {
+            ArrayList<MarkerOptions> markerOptionsArrayList = new ArrayList<MarkerOptions>();
+            for (Waypoint waypoint : waypoints) {
+                Geocoder geocoder = new Geocoder(mapsActivity);
+                try {
+                    List<Address> list = geocoder.getFromLocationName(waypoint.getAddress(), 1);
+                    if (list.size() > 0) {
+                        Address address = list.get(0);
+                        waypoint.setLatitude(address.getLatitude());
+                        waypoint.setLongitude(address.getLongitude());
+                    } else {
+                        Log.e("Geocoder", "Invalid address!");
+                        continue;
+                    }
+                } catch (IOException e) {
+                    Log.e("Geocoder", e.getMessage());
+                    continue;
+                }
+                markerOptionsArrayList.add(new MarkerOptions()
+                        .position(new LatLng(waypoint.getLatitude(), waypoint.getLongitude()))
+                        .title(waypoint.getTitle())
+                        .snippet(waypoint.getInfo()));
+            }
+            return markerOptionsArrayList;
+        }
+
+        protected void onPostExecute(ArrayList markerOptionsArrayList)
+        {
+            for (MarkerOptions markerOptions : (ArrayList<MarkerOptions>) markerOptionsArrayList) {
+                mMap.addMarker(markerOptions);
+            }
+        }
+
     }
 
     public Waypoint[] getWaypoints() {
