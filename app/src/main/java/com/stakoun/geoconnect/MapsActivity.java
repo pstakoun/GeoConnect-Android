@@ -95,7 +95,7 @@ public class MapsActivity extends FragmentActivity
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(loc.getLatitude(), loc.getLongitude()), 10f));
 
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+        /*mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                           @Override
                                           public boolean onMarkerClick(Marker marker) {
                                               UberDialogFragment uberDialogFragment = new UberDialogFragment();
@@ -105,7 +105,7 @@ public class MapsActivity extends FragmentActivity
                                               return false;
                                           }
                                       }
-        );
+        );*/
     }
 
     private void addSettingsIcon()
