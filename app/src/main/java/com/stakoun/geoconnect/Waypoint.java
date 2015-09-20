@@ -39,7 +39,7 @@ public class Waypoint
     }
 
     public boolean canSendNotif() {
-        return lastNotif == null || new Date().after(addDay(lastNotif));
+        return lastNotif == null || (new Date()).after(addDay(lastNotif));
     }
 
     public double getLatitude() {

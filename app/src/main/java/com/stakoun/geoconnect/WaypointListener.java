@@ -51,6 +51,7 @@ public class WaypointListener implements LocationListener
 
         mBuilder.setContentTitle(waypoint.getTitle() + " at " + waypoint.getAddress());
         mBuilder.setContentText(waypoint.getInfo());
+        mBuilder.setSmallIcon(R.drawable.target);
 
         Intent resultIntent = new Intent(mapsActivity, MapsActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mapsActivity);
